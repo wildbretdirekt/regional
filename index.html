@@ -56,7 +56,7 @@
 <body>
 
     <input type="radio" name="view-switch" id="tab-customer" checked>
-    <input type="radio" name="view-switch" id="tab-dashboard">
+    <input type="radio" name="view-switch" id="tab-dashboard" disabled>
 
     <header>
         <div class="header-title">
@@ -65,7 +65,7 @@
         </div>
         <div class="nav-tabs">
             <label for="tab-customer" class="nav-tab-label label-customer">🛒 Kundenansicht</label>
-            <label for="tab-dashboard" class="nav-tab-label label-dashboard">⚙️ Jäger-Dashboard</label>
+            <button type="button" onclick="openDashboard()" class="nav-tab-label label-dashboard" style="background:transparent; border:none; font-family:inherit;">⚙️ Jäger-Dashboard</button>
         </div>
     </header>
 
@@ -358,7 +358,6 @@
             let itemsSummary = cart.map(c => `- ${c.game} (${c.cut}), ${c.weight.toFixed(2)} kg à ${c.pricePerKg.toFixed(2)} €/kg`).join('\n');
             let totalSum = cart.reduce((sum, c) => sum + (c.weight * c.pricePerKg), 0).toFixed(2);
 
-            // E-MAIL VERSAND AN GMX VIA WEB3FORMS (Mit sauberem Warten auf Antwort)
             const formData = new FormData();
             formData.append("access_key", "6513d8c3-ccd5-4d04-9b73-9d8fd4f8d56d");
             formData.append("subject", `Neue Wildbret-Reservierung von ${name}!`);
@@ -376,7 +375,6 @@
             .then(data => {
                 console.log("E-Mail erfolgreich versendet:", data);
                 
-                // Erst NACH erfolgreichem Versand Bestände aktualisieren und UI zurücksetzen
                 const reservedIds = cart.map(c => c.id);
                 inventory.forEach(i => {
                     if (reservedIds.includes(i.id)) {
@@ -399,6 +397,18 @@
                 console.error("Fehler beim E-Mail-Versand:", error);
                 alert("Fehler beim Senden der Reservierung. Bitte versuchen Sie es erneut.");
             });
+        }
+
+        // PASSWORT-SCHUTZ FÜR DAS JÄGER-DASHBOARD
+        function openDashboard() {
+            const pin = prompt("Bitte Jäger-Passwort eingeben:");
+            if (pin === "Jagen_im_Sumava_18") { // Hier Ihr Passwort ändern
+                const radio = document.getElementById('tab-dashboard');
+                radio.disabled = false;
+                radio.checked = true;
+            } else if (pin !== null) {
+                alert("Falsches Passwort!");
+            }
         }
 
         render();
