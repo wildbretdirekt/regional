@@ -91,6 +91,8 @@
                     <span>Gesamtsumme:</span>
                     <span id="cart-total" style="color:#047857;">0.00 €</span>
                 </div>
+                <p style="font-size:11px; color:#d97706; margin-bottom:12px; font-weight:600;">* Mindestbestellwert: 30,00 €</p>
+                
                 <form onsubmit="handleCheckout(event)">
                     <div class="form-group">
                         <label>Name für Abholung *</label>
@@ -261,7 +263,7 @@
                     cartList.innerHTML += `
                         <div class="cart-item">
                             <div>
-                                <strong>${c.game} - ${c.cut}</strong><br>
+                                <strong>${c.game} -${c.cut}</strong><br>
                                 <small style="color:#64748b;">${c.weight.toFixed(2)} kg à ${c.pricePerKg.toFixed(2)} €/kg</small>
                             </div>
                             <div style="display: flex; align-items: center; gap: 10px;">
@@ -281,193 +283,4 @@
                 const itemPrice = (item.weight * item.pricePerKg).toFixed(2);
                 let customerInfo = '-';
                 if (item.status === 'reserved' && item.customer) {
-                    customerInfo = `<strong>${item.customer}</strong><br><small style="color:#64748b;">📧 ${item.email || '-'}<br>📞 ${item.phone}<br>🕒 ${item.appointment || 'Nach Vereinbarung'}</small>`;
-                }
-
-                table.innerHTML += `
-                    <tr>
-                        <td><strong>${item.game}</strong></td>
-                        <td>${item.cut}</td>
-                        <td>${item.weight.toFixed(2)} kg</td>
-                        <td>${item.pricePerKg.toFixed(2)} €</td>
-                        <td><strong>${itemPrice} €</strong></td>
-                        <td><span class="badge" style="${item.status === 'reserved' ? 'background:#fef3c7; color:#92400e;' : ''}">${item.status === 'available' ? 'Verfügbar' : 'Reserviert'}</span></td>
-                        <td>${customerInfo}</td>
-                        <td style="text-align:right;">
-                            <button type="button" onclick="toggleStatus(${item.id})" style="padding:4px 8px; font-size:12px; cursor:pointer;">Status ändern</button>
-                            <button type="button" onclick="deleteItem(${item.id})" style="padding:4px 8px; font-size:12px; color:red; cursor:pointer;">Löschen</button>
-                        </td>
-                    </tr>
-                `;
-            });
-        }
-
-        function addToCart(id) {
-            const item = inventory.find(i => i.id === id);
-            if (item && !cart.some(c => c.id === id)) {
-                cart.push(item);
-                render();
-            }
-        }
-
-        function removeFromCart(id) {
-            cart = cart.filter(c => c.id !== id);
-            render();
-        }
-
-        function addItem(e) {
-            e.preventDefault();
-            const newItem = {
-                id: Date.now(),
-                game: document.getElementById('new-game').value,
-                cut: document.getElementById('new-cut').value,
-                weight: parseFloat(document.getElementById('new-weight').value),
-                pricePerKg: parseFloat(document.getElementById('new-price').value),
-                status: "available",
-                customer: null,
-                email: null,
-                phone: null,
-                appointment: null
-            };
-            inventory.push(newItem);
-            document.getElementById('new-cut').value = '';
-            document.getElementById('new-weight').value = '';
-            document.getElementById('new-price').value = '';
-            saveAndRender();
-        }
-
-        function toggleStatus(id) {
-            const item = inventory.find(i => i.id === id);
-            if (item) {
-                if (item.status === 'available') {
-                    item.status = 'reserved';
-                    item.customer = 'Manuell geändert';
-                    item.email = '-';
-                    item.phone = '-';
-                    item.appointment = 'Nach Absprache';
-                } else {
-                    item.status = 'available';
-                    item.customer = null;
-                    item.email = null;
-                    item.phone = null;
-                    item.appointment = null;
-                }
-                saveAndRender();
-            }
-        }
-
-        function deleteItem(id) {
-            inventory = inventory.filter(i => i.id !== id);
-            cart = cart.filter(c => c.id !== id);
-            saveAndRender();
-        }
-
-        function handleCheckout(e) {
-            e.preventDefault();
-            if (cart.length === 0) {
-                alert('Bitte wählen Sie zuerst mindestens ein Teilstück aus.');
-                return;
-            }
-            const name = document.getElementById('cust-name').value;
-            const email = document.getElementById('cust-email').value;
-            const phone = document.getElementById('cust-phone').value;
-            const date = document.getElementById('cust-date').value;
-            const time = document.getElementById('cust-time').value;
-            
-            let formattedDate = date;
-            if (date) {
-                const parts = date.split('-');
-                if (parts.length === 3) formattedDate = `${parts[2]}.${parts[1]}.${parts[0]}`;
-            }
-            const appointmentStr = `${formattedDate}, ${time} Uhr`;
-
-            let itemsSummary = cart.map(c => `- ${c.game} (${c.cut}), ${c.weight.toFixed(2)} kg à ${c.pricePerKg.toFixed(2)} €/kg`).join('\n');
-            let totalSum = cart.reduce((sum, c) => sum + (c.weight * c.pricePerKg), 0).toFixed(2);
-
-            const formData = new FormData();
-            formData.append("access_key", "6513d8c3-ccd5-4d04-9b73-9d8fd4f8d56d");
-            formData.append("subject", `Neue Wildbret-Reservierung von ${name}!`);
-            formData.append("email", email);
-            formData.append("Kunde", name);
-            formData.append("E-Mail", email);
-            formData.append("Telefon", phone);
-            formData.append("Abholtermin", appointmentStr);
-            formData.append("Auswahl", itemsSummary);
-            formData.append("Gesamtsumme", totalSum + " €");
-
-            fetch("https://api.web3forms.com/submit", {
-                method: "POST",
-                body: formData
-            })
-            .then(response => response.json())
-            .then(data => {
-                console.log("E-Mail erfolgreich versendet:", data);
-                
-                const reservedIds = cart.map(c => c.id);
-                inventory.forEach(i => {
-                    if (reservedIds.includes(i.id)) {
-                        i.status = 'reserved';
-                        i.customer = name;
-                        i.email = email;
-                        i.phone = phone;
-                        i.appointment = appointmentStr;
-                    }
-                });
-
-                alert(`Vielen Dank für Ihre Reservierung, ${name}!\nIhre Stücke sind für den ${appointmentStr} reserviert.`);
-                cart = [];
-                document.getElementById('cust-name').value = '';
-                document.getElementById('cust-email').value = '';
-                document.getElementById('cust-phone').value = '';
-                document.getElementById('cust-date').value = '';
-                document.getElementById('cust-time').value = '18:00';
-                saveAndRender();
-            })
-            .catch(error => {
-                console.error("Fehler beim E-Mail-Versand:", error);
-                alert("Fehler beim Senden der Reservierung. Bitte versuchen Sie es erneut.");
-            });
-        }
-
-        // --- SICHERER PASSWORT-SCHUTZ (MODAL) ---
-        function openDashboard() {
-            document.getElementById('password-modal').style.display = 'flex';
-            const pwdInput = document.getElementById('modal-pwd-input');
-            pwdInput.value = '';
-            pwdInput.type = 'password';
-            pwdInput.focus();
-        }
-
-        function closePwdModal() {
-            document.getElementById('password-modal').style.display = 'none';
-        }
-
-        function togglePwdVisibility() {
-            const input = document.getElementById('modal-pwd-input');
-            input.type = input.type === 'password' ? 'text' : 'password';
-        }
-
-        function handlePwdKey(e) {
-            if (e.key === 'Enter') {
-                submitPassword();
-            }
-        }
-
-        function submitPassword() {
-            const pin = document.getElementById('modal-pwd-input').value;
-            if (pin === "Jagen_im_Sumava_18") {
-                const radio = document.getElementById('tab-dashboard');
-                radio.disabled = false;
-                radio.checked = true;
-                closePwdModal();
-            } else {
-                alert("Falsches Passwort!");
-                document.getElementById('modal-pwd-input').value = '';
-                document.getElementById('modal-pwd-input').focus();
-            }
-        }
-
-        render();
-    </script>
-</body>
-</html>
+                    customerInfo = `<strong>${item.customer}</strong><br><small style="color:#64748b;">📧 ${item.email || '-'}<br>📞 ${item.phone}<br>🕒 ${item.
