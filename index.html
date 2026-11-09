@@ -411,3 +411,63 @@
                         i.email = email;
                         i.phone = phone;
                         i.appointment = appointmentStr;
+                    }
+                });
+
+                alert(`Vielen Dank für Ihre Reservierung, ${name}!\nIhre Stücke sind für den ${appointmentStr} reserviert.`);
+                cart = [];
+                document.getElementById('cust-name').value = '';
+                document.getElementById('cust-email').value = '';
+                document.getElementById('cust-phone').value = '';
+                document.getElementById('cust-date').value = '';
+                document.getElementById('cust-time').value = '18:00';
+                saveAndRender();
+            })
+            .catch(error => {
+                console.error("Fehler beim E-Mail-Versand:", error);
+                alert("Fehler beim Senden der Reservierung. Bitte versuchen Sie es erneut.");
+            });
+        }
+
+        // --- SICHERER PASSWORT-SCHUTZ (MODAL) ---
+        function openDashboard() {
+            document.getElementById('password-modal').style.display = 'flex';
+            const pwdInput = document.getElementById('modal-pwd-input');
+            pwdInput.value = '';
+            pwdInput.type = 'password';
+            pwdInput.focus();
+        }
+
+        function closePwdModal() {
+            document.getElementById('password-modal').style.display = 'none';
+        }
+
+        function togglePwdVisibility() {
+            const input = document.getElementById('modal-pwd-input');
+            input.type = input.type === 'password' ? 'text' : 'password';
+        }
+
+        function handlePwdKey(e) {
+            if (e.key === 'Enter') {
+                submitPassword();
+            }
+        }
+
+        function submitPassword() {
+            const pin = document.getElementById('modal-pwd-input').value;
+            if (pin === "Jagen_im_Sumava_18") {
+                const radio = document.getElementById('tab-dashboard');
+                radio.disabled = false;
+                radio.checked = true;
+                closePwdModal();
+            } else {
+                alert("Falsches Passwort!");
+                document.getElementById('modal-pwd-input').value = '';
+                document.getElementById('modal-pwd-input').focus();
+            }
+        }
+
+        render();
+    </script>
+</body>
+</html>
