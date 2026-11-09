@@ -9,7 +9,7 @@
         body { background-color: #f8fafc; color: #1e293b; min-height: 100vh; display: flex; flex-direction: column; }
         header { background-color: #064e3b; color: white; padding: 16px 24px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
         .header-title h1 { font-size: 20px; font-weight: bold; }
-        .header-title p { font-size: 12px; color: #a7f3d0; }
+        .header-title p { font-size: 12px; color: #a7f3d0; margin-top: 2px; line-height: 1.4; }
         
         .nav-tabs { display: flex; gap: 4px; background: #047857; padding: 4px; border-radius: 8px; }
         .nav-tab-label { padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 14px; color: white; transition: background 0.2s; }
@@ -61,7 +61,10 @@
     <header>
         <div class="header-title">
             <h1>🌲 Wildbret aus der stressfreien Wald-/Einzeljagd</h1>
-            <p>Küchenfertig portioniert</p>
+            <p>
+                Kundige Person nach VO (EG) Nr. 853/2004 | Verwendung bleifreier Munition<br>
+                Abgabe in kleinen Mengen (Strecke eines Jagdtages) im Umkreis von 100 km | Küchenfertig portioniert
+            </p>
         </div>
         <div class="nav-tabs">
             <label for="tab-customer" class="nav-tab-label label-customer">🛒 Bestand</label>
@@ -369,7 +372,7 @@
             const formData = new FormData();
             formData.append("access_key", "6513d8c3-ccd5-4d04-9b73-9d8fd4f8d56d");
             formData.append("subject", `Neue Wildbret-Reservierung von ${name}!`);
-            formData.append("email", email); // WICHTIG: Web3Forms benötigt exakt diesen Key für die Absender-/Empfänger-Zuordnung
+            formData.append("email", email);
             formData.append("Kunde", name);
             formData.append("E-Mail", email);
             formData.append("Telefon", phone);
