@@ -96,6 +96,10 @@
                         <input type="text" id="cust-name" required placeholder="Max Mustermann">
                     </div>
                     <div class="form-group">
+                        <label>E-Mail-Adresse *</label>
+                        <input type="email" id="cust-email" required placeholder="max@beispiel.de">
+                    </div>
+                    <div class="form-group">
                         <label>Telefonnummer *</label>
                         <input type="tel" id="cust-phone" required placeholder="0170 1234567">
                     </div>
@@ -346,6 +350,7 @@
                 return;
             }
             const name = document.getElementById('cust-name').value;
+            const email = document.getElementById('cust-email').value;
             const phone = document.getElementById('cust-phone').value;
             const date = document.getElementById('cust-date').value;
             const time = document.getElementById('cust-time').value;
@@ -364,6 +369,7 @@
             formData.append("access_key", "6513d8c3-ccd5-4d04-9b73-9d8fd4f8d56d");
             formData.append("subject", `Neue Wildbret-Reservierung von ${name}!`);
             formData.append("Kunde", name);
+            formData.append("E-Mail", email);
             formData.append("Telefon", phone);
             formData.append("Abholtermin", appointmentStr);
             formData.append("Auswahl", itemsSummary);
@@ -390,6 +396,7 @@
                 alert(`Vielen Dank für Ihre Reservierung, ${name}!\nIhre Stücke sind für den ${appointmentStr} reserviert.`);
                 cart = [];
                 document.getElementById('cust-name').value = '';
+                document.getElementById('cust-email').value = '';
                 document.getElementById('cust-phone').value = '';
                 document.getElementById('cust-date').value = '';
                 document.getElementById('cust-time').value = '18:00';
