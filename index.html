@@ -328,6 +328,13 @@
                     customerInfo = `<strong>${item.customer}</strong><br><small style="color:#64748b;">📧 ${item.email || '-'}<br>📞 ${item.phone}<br>🕒 ${item.appointment || 'Nach Vereinbarung'}</small>`;
                 }
 
+                // Text und Stil für den Status-Button anpassen
+                const isReserved = item.status === 'reserved';
+                const statusButtonText = isReserved ? 'erneut veröffentlichen' : 'Reservieren';
+                const statusButtonStyle = isReserved 
+                    ? 'padding:4px 8px; font-size:11px; background:#047857; color:white; border:none; border-radius:4px; cursor:pointer; white-space:nowrap;'
+                    : 'padding:4px 8px; font-size:11px; background:#e2e8f0; color:#1e293b; border:none; border-radius:4px; cursor:pointer; white-space:nowrap;';
+
                 table.innerHTML += `
                     <tr>
                         <td><strong>${item.game}</strong><br>${item.cut}</td>
@@ -335,9 +342,9 @@
                         <td><span class="badge" style="${item.status === 'reserved' ? 'background:#fef3c7; color:#92400e;' : ''}">${item.status === 'available' ? 'Verfügbar' : 'Reserviert'}</span></td>
                         <td>${customerInfo}</td>
                         <td style="text-align:right;">
-                            <div style="display:flex; flex-direction:column; gap:4px; align-items:flex-end;">
-                                <button type="button" onclick="toggleStatus(${item.id})" style="padding:4px 6px; font-size:11px; cursor:pointer;">Status</button>
-                                <button type="button" onclick="deleteItem(${item.id})" style="padding:4px 6px; font-size:11px; color:red; cursor:pointer; background:none; border:none;">Löschen</button>
+                            <div style="display:flex; flex-direction:column; gap:6px; align-items:flex-end;">
+                                <button type="button" onclick="toggleStatus(${item.id})" style="${statusButtonStyle}">${statusButtonText}</button>
+                                <button type="button" onclick="deleteItem(${item.id})" style="padding:2px 4px; font-size:11px; color:red; cursor:pointer; background:none; border:none;">Löschen</button>
                             </div>
                         </td>
                     </tr>
@@ -407,7 +414,7 @@
 
         function checkDashboardAccess(e) {
             if (!isAuthenticated) {
-                e.preventDefault(); // Verhindert sofortiges Umschalten
+                e.preventDefault();
                 openDashboardModal();
             }
         }
