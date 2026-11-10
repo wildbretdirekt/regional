@@ -456,7 +456,7 @@
             let itemsSummary = cart.map(c => `- ${c.game} (${c.cut}), ${c.weight.toFixed(2)} kg à ${c.pricePerKg.toFixed(2)} €/kg`).join('\n');
             let totalSumStr = totalSum.toFixed(2);
 
-            // Google Kalender Link für den Kunden generieren
+            // Google Kalender Link generieren
             const calLink = createGoogleCalendarLink(
                 "Wildbret Abholung",
                 `Ihre Reservierung:\n${itemsSummary}\nGesamtsumme: ${totalSumStr} €`,
@@ -467,15 +467,29 @@
 
             const formData = new FormData();
             formData.append("access_key", "6513d8c3-ccd5-4d04-9b73-9d8fd4f8d56d");
-            formData.append("subject", `Neue Wildbret-Reservierung von ${name}!`);
-            formData.append("email", email);
+            formData.append("subject", `Bestätigung Ihrer Wildbret-Reservierung (${appointmentStr})`);
+            
+            // WICHTIG: Setzt die Kunden-Email als primary/replyto, damit Web3Forms die Bestätigung auch an den Käufer schickt
+            formData.append("email", email); 
+            formData.append("replyto", "wildbret.direkt@gmx.de");
+
             formData.append("Kunde", name);
             formData.append("E-Mail", email);
             formData.append("Telefon", phone);
             formData.append("Abholtermin", appointmentStr);
             formData.append("Auswahl", itemsSummary);
             formData.append("Gesamtsumme", totalSumStr + " €");
-            formData.append("Google Kalender Link", calLink);
+
+            // Nachricht an den Kunden / Bestätigungstext
+            formData.append("message", 
+                `Hallo ${name},\n\n` +
+                `vielen Dank für Ihre Wildbret-Reservierung!\n\n` +
+                `Ihr vereinbarter Abholtermin:\n📍 Nikolaus-Lenau-Str. 18, 85757 Karlsfeld\n🕒 ${appointmentStr}\n\n` +
+                `Ihre ausgewählten Stücke:\n${itemsSummary}\n\n` +
+                `Gesamtsumme: ${totalSumStr} €\n\n` +
+                `👉 Termin in den Google-Kalender eintragen:\n${calLink}\n\n` +
+                `Mit freundlichen Grüßen\nJohannes Schönleben`
+            );
 
             fetch("https://api.web3forms.com/submit", {
                 method: "POST",
@@ -501,7 +515,7 @@
                 successContainer.innerHTML = `
                     <div style="background:#d1fae5; border:1px solid #059669; border-radius:8px; padding:16px; text-align:center;">
                         <h4 style="color:#065f46; margin-bottom:8px;">✅ Reservierung erfolgreich!</h4>
-                        <p style="font-size:13px; color:#064e3b; margin-bottom:12px;">Vielen Dank, ${name}! Ihre Stücke sind für den <strong>${appointmentStr}</strong> reserviert.</p>
+                        <p style="font-size:13px; color:#064e3b; margin-bottom:12px;">Vielen Dank, ${name}! Eine Bestätigung wurde an Ihre E-Mail-Adresse gesendet. Ihre Stücke sind für den <strong>${appointmentStr}</strong> reserviert.</p>
                         ${calLink ? `<a href="${calLink}" target="_blank" class="btn-add" style="display:block; text-align:center; text-decoration:none; background:#047857; margin-top:8px;">📅 Termin direkt in den Google-Kalender eintragen</a>` : ''}
                     </div>
                 `;
