@@ -178,6 +178,14 @@
 
         <!-- JÄGER DASHBOARD -->
         <div class="view-content container-dashboard">
+            <!-- NEUER EXPORT-BUTTON FÜR GITHUB -->
+            <div class="card" style="background:#f0fdf4; border-color:#bbf7d0;">
+                <h3 style="color:#065f46; margin-bottom:8px;">🚀 GitHub-Synchronisation</h3>
+                <p style="font-size:13px; color:#047857; margin-bottom:12px;">Klicken Sie hier, um Ihren aktuellen Bestands-Code in die Zwischenablage zu kopieren, um ihn direkt auf GitHub einzufügen:</p>
+                <button type="button" onclick="copyInventoryForGitHub()" style="background:#047857; color:white; border:none; padding:10px 16px; border-radius:6px; cursor:pointer; font-weight:600; font-size:13px;">📋 Bestand für GitHub kopieren</button>
+                <span id="copy-feedback" style="margin-left:10px; font-size:13px; color:#059669; font-weight:600; display:none;">Kopiert! ✓</span>
+            </div>
+
             <div class="card">
                 <h3>➕ Neues Wildbret einpflegen</h3>
                 <form onsubmit="addItem(event)" style="display:grid; grid-template-columns: 1fr; gap: 12px; margin-top:12px;">
@@ -322,8 +330,6 @@
     <script>
         let isAuthenticated = false;
 
-        /* HIER TRAGEN SIE IHRE ZENTRALE GRUNDDATENBANK EIN:
-           Diese Stücke sind die feste Basis für jeden neuen Besucher. */
         const initialInventory = [
             { id: 1, game: "Rehwild", cut: "Keule mit Knochen", weight: 1.850, pricePerKg: 18.00, status: "available", customer: null, email: null, phone: null, appointment: null },
             { id: 2, game: "Rehwild", cut: "Rücken (ausgelöst)", weight: 0.650, pricePerKg: 38.00, status: "available", customer: null, email: null, phone: null, appointment: null },
@@ -343,6 +349,30 @@
         function saveAndRender() {
             localStorage.setItem('wildbret_inventory', JSON.stringify(inventory));
             render();
+        }
+
+        // NEUE FUNKTION: Generiert sauberen JS-Code des aktuellen Bestands für GitHub
+        function copyInventoryForGitHub() {
+            let code = "const initialInventory = [\n";
+            inventory.forEach((item, index) => {
+                let custStr = item.customer ? `"${item.customer}"` : "null";
+                let emailStr = item.email ? `"${item.email}"` : "null";
+                let phoneStr = item.phone ? `"${item.phone}"` : "null";
+                let appStr = item.appointment ? `"${item.appointment}"` : "null";
+                
+                code += `    { id: ${item.id}, game: "${item.game}", cut: "${item.cut}", weight: ${item.weight.toFixed(3)}, pricePerKg: ${item.pricePerKg.toFixed(2)}, status: "${item.status}", customer: ${custStr}, email: ${emailStr}, phone: ${phoneStr}, appointment: ${appStr} }`;
+                if (index < inventory.length - 1) code += ",";
+                code += "\n";
+            });
+            code += "];";
+
+            navigator.clipboard.writeText(code).then(() => {
+                const feedback = document.getElementById('copy-feedback');
+                feedback.style.display = 'inline';
+                setTimeout(() => { feedback.style.display = 'none'; }, 2500);
+            }).catch(err => {
+                alert("Fehler beim Kopieren: " + err);
+            });
         }
 
         function render() {
