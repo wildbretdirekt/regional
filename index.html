@@ -196,7 +196,8 @@
                     </div>
                     <div class="form-group">
                         <label>Gewicht (kg)</label>
-                        <input type="number" step="0.01" id="new-weight" required placeholder="1.45">
+                        <!-- Geändert auf step="0.001" für 3 Nachkommastellen -->
+                        <input type="number" step="0.001" id="new-weight" required placeholder="1.450">
                     </div>
                     <div class="form-group">
                         <label>Preis (€/kg)</label>
@@ -258,7 +259,7 @@
             E-Mail: wildbret.direkt@gmx.de</p>
 
             <p style="margin-bottom:10px;"><strong>3. Datenerfassung auf dieser Website</strong><br>
-            <strong>Reservierungsdaten:</strong> Wenn Sie über unsere Website Wildbret reservieren, erheben wir die von Ihnen eingegebenen Daten (Name, E-Mail-Adresse, Telefonnummer, Abholtermin und ausgewählte Stücke). Diese Daten werden ausschliesslich zur Abwicklung Ihrer Reservierung und zur Kontaktaufnahme gemäß Art. 6 Abs. 1 lit. b DSGVO verarbeitet. Die Benachrichtigung an den Anbieter erfolgt via Web3Forms, die automatische Bestätigung an Sie via EmailJS. Es findet keine Weitergabe an Dritte statt.</p>
+            <strong>Reservierungsdaten:</strong> Wenn Sie über unsere Website Wildbret reservieren, erheben wir die von Ihnen eingegebenen Daten (Name, E-Mail-Adresse, Telefonnummer, Abholtermin und ausgewählte Stücke). Diese Daten werden ausschließlich zur Abwicklung Ihrer Reservierung und zur Kontaktaufnahme gemäß Art. 6 Abs. 1 lit. b DSGVO verarbeitet. Die Benachrichtigung an den Anbieter erfolgt via Web3Forms, die automatische Bestätigung an Sie via EmailJS. Es findet keine Weitergabe an Dritte statt.</p>
 
             <p style="margin-bottom:10px;"><strong>Speicherung im Browser (LocalStorage):</strong> Die Website nutzt den lokalen Speicher Ihres Browsers (LocalStorage), um den Bestand und die Auswahl zwischenzuspeichern. Es werden hierbei keine Tracking- oder Analyse-Cookies eingesetzt.</p>
 
@@ -328,7 +329,7 @@
                             <div>
                                 <span class="badge">${item.game}</span>
                                 <h4 style="margin: 8px 0 4px 0;">${item.cut}</h4>
-                                <p style="font-size:13px; color:#64748b;">Gewicht: <strong>${item.weight.toFixed(2)} kg</strong> (${item.pricePerKg.toFixed(2)} €/kg)</p>
+                                <p style="font-size:13px; color:#64748b;">Gewicht: <strong>${item.weight.toFixed(3)} kg</strong> (${item.pricePerKg.toFixed(2)} €/kg)</p>
                             </div>
                             <div style="margin-top:12px;">
                                 <div class="price-tag">${totalPrice} €</div>
@@ -355,7 +356,7 @@
                         <div class="cart-item">
                             <div>
                                 <strong>${c.game} - ${c.cut}</strong><br>
-                                <small style="color:#64748b;">${c.weight.toFixed(2)} kg à ${c.pricePerKg.toFixed(2)} €/kg</small>
+                                <small style="color:#64748b;">${c.weight.toFixed(3)} kg à ${c.pricePerKg.toFixed(2)} €/kg</small>
                             </div>
                             <div style="display: flex; align-items: center; gap: 8px;">
                                 <strong style="color:#047857; white-space:nowrap;">${itemPrice.toFixed(2)} €</strong>
@@ -386,7 +387,7 @@
                 table.innerHTML += `
                     <tr>
                         <td><strong>${item.game}</strong><br>${item.cut}</td>
-                        <td>${item.weight.toFixed(2)} kg<br>${itemPrice} €</td>
+                        <td>${item.weight.toFixed(3)} kg<br>${itemPrice} €</td>
                         <td><span class="badge" style="${item.status === 'reserved' ? 'background:#fef3c7; color:#92400e;' : ''}">${item.status === 'available' ? 'Verfügbar' : 'Reserviert'}</span></td>
                         <td>${customerInfo}</td>
                         <td style="text-align:right;">
@@ -575,7 +576,7 @@
             }
             const appointmentStr = `${formattedDate}, ${time} Uhr`;
 
-            let itemsSummary = cart.map(c => `- ${c.game} (${c.cut}), ${c.weight.toFixed(2)} kg à ${c.pricePerKg.toFixed(2)} €/kg`).join('\n');
+            let itemsSummary = cart.map(c => `- ${c.game} (${c.cut}), ${c.weight.toFixed(3)} kg à ${c.pricePerKg.toFixed(2)} €/kg`).join('\n');
             let totalSumStr = totalSum.toFixed(2);
 
             const calLink = createGoogleCalendarLink(
@@ -639,7 +640,7 @@
                 <div style="background:#d1fae5; border:1px solid #059669; border-radius:8px; padding:16px; text-align:center;">
                     <h4 style="color:#065f46; margin-bottom:8px;">✅ Reservierung erfolgreich!</h4>
                     <p style="font-size:13px; color:#064e3b; margin-bottom:12px;">Vielen Dank, ${name}! Eine Bestätigung wurde an Ihre E-Mail gesendet. Ihre Stücke sind für den <strong>${appointmentStr}</strong> reserviert.</p>
-                    ${calLink ? `<a href="${calLink}" target="_blank" class="btn-add" style="display:block; text-align:center; text-decoration:none; background:#047857; margin-top:8px;">📅 Abholtermin direkt in den Kalender eintragen</a>` : ''}
+                    ${calLink ? `<a href="${calLink}" target="_blank" class="btn-add" style="display:block; test-align:center; text-decoration:none; background:#047857; margin-top:8px;">📅 Abholtermin direkt in den Kalender eintragen</a>` : ''}
                 </div>
             `;
 
