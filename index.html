@@ -35,8 +35,9 @@
         
         .nav-tabs { display: flex; gap: 6px; background: #047857; padding: 4px; border-radius: 8px; width: 100%; }
         @media (min-width: 768px) { .nav-tabs { width: auto; } }
-        .nav-tab-label { flex: 1; text-align: center; padding: 10px 8px; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 11px; color: white; transition: background 0.2s; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .nav-tab-label { flex: 1; text-align: center; padding: 10px 8px; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 11px; color: white; transition: background 0.2s; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; user-select: none; }
         @media (min-width: 768px) { .nav-tab-label { font-size: 13px; padding: 8px 12px; flex: unset; } }
+        
         input[name="view-switch"] { display: none; }
         
         #tab-customer:checked ~ header .label-customer,
@@ -89,7 +90,7 @@
 <body>
 
     <input type="radio" name="view-switch" id="tab-customer" checked>
-    <input type="radio" name="view-switch" id="tab-dashboard" disabled>
+    <input type="radio" name="view-switch" id="tab-dashboard">
 
     <header>
         <div class="header-title">
@@ -101,7 +102,7 @@
         </div>
         <div class="nav-tabs">
             <label for="tab-customer" class="nav-tab-label label-customer">🛒 Bestand</label>
-            <button type="button" onclick="openDashboard()" class="nav-tab-label label-dashboard" style="background:transparent; border:none; font-family:inherit; color:white;">⚙️ Verwaltung</button>
+            <label for="tab-dashboard" class="nav-tab-label label-dashboard" onclick="checkDashboardAccess(event)">📋 Bestandsverwaltung</label>
         </div>
     </header>
 
@@ -239,6 +240,8 @@
     </footer>
 
     <script>
+        let isAuthenticated = false;
+
         const initialInventory = [
             { id: 1, game: "Rehwild", cut: "Keule mit Knochen", weight: 1.85, pricePerKg: 18.00, status: "available", customer: null, email: null, phone: null, appointment: null },
             { id: 2, game: "Rehwild", cut: "Rücken (ausgelöst)", weight: 0.65, pricePerKg: 38.00, status: "available", customer: null, email: null, phone: null, appointment: null },
@@ -402,6 +405,52 @@
             saveAndRender();
         }
 
+        function checkDashboardAccess(e) {
+            if (!isAuthenticated) {
+                e.preventDefault(); // Verhindert sofortiges Umschalten
+                openDashboardModal();
+            }
+        }
+
+        function openDashboardModal() {
+            document.getElementById('password-modal').style.display = 'flex';
+            const pwdInput = document.getElementById('modal-pwd-input');
+            pwdInput.value = '';
+            pwdInput.type = 'password';
+            pwdInput.focus();
+        }
+
+        function closePwdModal() {
+            document.getElementById('password-modal').style.display = 'none';
+            if (!isAuthenticated) {
+                document.getElementById('tab-customer').checked = true;
+            }
+        }
+
+        function togglePwdVisibility() {
+            const input = document.getElementById('modal-pwd-input');
+            input.type = input.type === 'password' ? 'text' : 'password';
+        }
+
+        function handlePwdKey(e) {
+            if (e.key === 'Enter') {
+                submitPassword();
+            }
+        }
+
+        function submitPassword() {
+            const pin = document.getElementById('modal-pwd-input').value;
+            if (pin === "Jagen_im_Sumava_18") {
+                isAuthenticated = true;
+                document.getElementById('tab-dashboard').checked = true;
+                closePwdModal();
+            } else {
+                alert("Falsches Passwort!");
+                document.getElementById('modal-pwd-input').value = '';
+                document.getElementById('modal-pwd-input').focus();
+            }
+        }
+
         function createGoogleCalendarLink(title, details, location, startDateStr, timeStr) {
             const dateParts = startDateStr.split('-');
             const timeParts = timeStr.split(':');
@@ -538,43 +587,6 @@
             document.getElementById('cust-date').value = '';
             document.getElementById('cust-time').value = '18:00';
             saveAndRender();
-        }
-
-        function openDashboard() {
-            document.getElementById('password-modal').style.display = 'flex';
-            const pwdInput = document.getElementById('modal-pwd-input');
-            pwdInput.value = '';
-            pwdInput.type = 'password';
-            pwdInput.focus();
-        }
-
-        function closePwdModal() {
-            document.getElementById('password-modal').style.display = 'none';
-        }
-
-        function togglePwdVisibility() {
-            const input = document.getElementById('modal-pwd-input');
-            input.type = input.type === 'password' ? 'text' : 'password';
-        }
-
-        function handlePwdKey(e) {
-            if (e.key === 'Enter') {
-                submitPassword();
-            }
-        }
-
-        function submitPassword() {
-            const pin = document.getElementById('modal-pwd-input').value;
-            if (pin === "Jagen_im_Sumava_18") {
-                const radio = document.getElementById('tab-dashboard');
-                radio.disabled = false;
-                radio.checked = true;
-                closePwdModal();
-            } else {
-                alert("Falsches Passwort!");
-                document.getElementById('modal-pwd-input->value = '';
-                document.getElementById('modal-pwd-input').focus();
-            }
         }
 
         render();
