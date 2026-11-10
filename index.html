@@ -103,7 +103,7 @@
         @media (min-width: 768px) { footer .footer-container { flex-direction: row; justify-content: space-between; } }
         footer h4 { color: #f8fafc; margin-bottom: 8px; font-size: 14px; }
         footer p { margin-bottom: 4px; line-height: 1.4; word-break: break-word; }
-        footer a { color: #34d399; text-decoration: none; }
+        footer a { color: #34d399; text-decoration: none; cursor: pointer; }
         footer a:hover { text-decoration: underline; }
     </style>
 </head>
@@ -243,6 +243,34 @@
         </div>
     </div>
 
+    <!-- DATENSCHUTZ-MODAL -->
+    <div id="privacy-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:1100; justify-content:center; align-items:center; padding: 16px;">
+        <div style="background:white; padding:24px; border-radius:12px; width:100%; max-width:600px; max-height:85vh; overflow-y:auto; box-shadow:0 4px 20px rgba(0,0,0,0.2); color:#1e293b; font-size:13px; line-height:1.5;">
+            <h3 style="margin-bottom:12px; font-size:18px; color:#064e3b;">Datenschutzerklärung</h3>
+            
+            <p style="margin-bottom:10px;"><strong>1. Datenschutz auf einen Blick</strong><br>
+            Die folgenden Hinweise geben einen einfachen Überblick darüber, was mit Ihren personenbezogenen Daten passiert, wenn Sie diese Website besuchen. Personenbezogene Daten sind alle Daten, mit denen Sie persönlich identifiziert werden können.</p>
+
+            <p style="margin-bottom:10px;"><strong>2. Verantwortliche Stelle</strong><br>
+            Johannes Schönleben<br>
+            Nikolaus-Lenau-Str. 18<br>
+            85757 Karlsfeld<br>
+            E-Mail: wildbret.direkt@gmx.de</p>
+
+            <p style="margin-bottom:10px;"><strong>3. Datenerfassung auf dieser Website</strong><br>
+            <strong>Reservierungsdaten:</strong> Wenn Sie über unsere Website Wildbret reservieren, erheben wir die von Ihnen eingegebenen Daten (Name, E-Mail-Adresse, Telefonnummer, Abholtermin und ausgewählte Stücke). Diese Daten werden ausschliesslich zur Abwicklung Ihrer Reservierung und zur Kontaktaufnahme gemäß Art. 6 Abs. 1 lit. b DSGVO verarbeitet. Die Benachrichtigung an den Anbieter erfolgt via Web3Forms, die automatische Bestätigung an Sie via EmailJS. Es findet keine Weitergabe an Dritte statt.</p>
+
+            <p style="margin-bottom:10px;"><strong>Speicherung im Browser (LocalStorage):</strong> Die Website nutzt den lokalen Speicher Ihres Browsers (LocalStorage), um den Bestand und die Auswahl zwischenzuspeichern. Es werden hierbei keine Tracking- oder Analyse-Cookies eingesetzt.</p>
+
+            <p style="margin-bottom:16px;"><strong>4. Ihre Rechte</strong><br>
+            Sie haben jederzeit das Recht auf unentgeltliche Auskunft über Ihre gespeicherten personenbezogenen Daten, deren Herkunft und Empfänger und den Zweck der Datenverarbeitung sowie ein Recht auf Berichtigung oder Löschung dieser Daten.</p>
+
+            <div style="text-align:right;">
+                <button type="button" onclick="closePrivacyModal()" style="padding:8px 16px; background:#047857; color:white; border:none; border-radius:6px; cursor:pointer; font-weight:600;">Schließen</button>
+            </div>
+        </div>
+    </div>
+
     <footer>
         <div class="footer-container">
             <div>
@@ -252,9 +280,10 @@
                 <p>85757 Karlsfeld</p>
             </div>
             <div>
-                <h4>Kontakt & Abholung</h4>
+                <h4>Kontakt & Rechtliches</h4>
                 <p>E-Mail: <a href="mailto:wildbret.direkt@gmx.de">wildbret.direkt@gmx.de</a></p>
-                <p>Abholung nach vorheriger Reservierung & Vereinbarung.</p>
+                <p>Abholung nach vorheriger Reservierung.</p>
+                <p style="margin-top: 6px;"><a onclick="openPrivacyModal()">🔒 Datenschutzerklärung</a></p>
             </div>
         </div>
     </footer>
@@ -362,7 +391,7 @@
                         <td>${customerInfo}</td>
                         <td style="text-align:right;">
                             <div style="display:flex; flex-direction:column; gap:6px; align-items:flex-end;">
-                                <button type="button" onclick="toggleStatus(${item.id})" style="${statusButtonText}">${statusButtonText}</button>
+                                <button type="button" onclick="toggleStatus(${item.id})" style="${statusButtonStyle}">${statusButtonText}</button>
                                 <button type="button" onclick="deleteItem(${item.id})" style="padding:2px 4px; font-size:11px; color:red; cursor:pointer; background:none; border:none;">Löschen</button>
                             </div>
                         </td>
@@ -398,7 +427,7 @@
                 phone: null,
                 appointment: null
             };
-            inventory.push(newItem);
+            inventory.unshift(newItem);
             document.getElementById('new-cut').value = '';
             document.getElementById('new-weight').value = '';
             document.getElementById('new-price').value = '';
@@ -451,6 +480,14 @@
             if (!isAuthenticated) {
                 document.getElementById('tab-customer').checked = true;
             }
+        }
+
+        function openPrivacyModal() {
+            document.getElementById('privacy-modal').style.display = 'flex';
+        }
+
+        function closePrivacyModal() {
+            document.getElementById('privacy-modal').style.display = 'none';
         }
 
         function togglePwdVisibility() {
