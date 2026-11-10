@@ -6,64 +6,75 @@
     <title>Wildbret aus der stressfreien Wald-/Einzeljagd</title>
     <style>
         * { box-sizing: border-box; font-family: system-ui, -apple-system, sans-serif; margin: 0; padding: 0; }
-        body { background-color: #f8fafc; color: #1e293b; min-height: 100vh; display: flex; flex-direction: column; }
+        body { background-color: #f8fafc; color: #1e293b; min-height: 100vh; display: flex; flex-direction: column; overflow-x: hidden; }
         
         header { 
             background-color: #064e3b; 
             color: white; 
-            padding: 16px 24px; 
+            padding: 16px; 
             display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
-            flex-wrap: wrap; 
-            gap: 16px;
+            flex-direction: column;
+            gap: 12px;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1); 
         }
-        .header-title { flex: 1; min-width: 280px; }
-        .header-title h1 { font-size: 20px; font-weight: bold; }
-        .header-title p { font-size: 12px; color: #a7f3d0; margin-top: 4px; line-height: 1.4; }
+        @media (min-width: 768px) {
+            header { flex-direction: row; justify-content: space-between; align-items: center; padding: 16px 24px; }
+        }
+        .header-title { width: 100%; }
+        @media (min-width: 768px) { .header-title { width: auto; flex: 1; } }
+        .header-title h1 { font-size: 18px; font-weight: bold; word-break: break-word; }
+        @media (min-width: 768px) { .header-title h1 { font-size: 20px; } }
+        .header-title p { font-size: 11px; color: #a7f3d0; margin-top: 4px; line-height: 1.4; }
         
-        .nav-tabs { display: flex; gap: 4px; background: #047857; padding: 4px; border-radius: 8px; }
-        .nav-tab-label { padding: 8px 12px; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 13px; color: white; transition: background 0.2s; white-space: nowrap; }
+        .nav-tabs { display: flex; gap: 4px; background: #047857; padding: 4px; border-radius: 8px; width: 100%; }
+        @media (min-width: 768px) { .nav-tabs { width: auto; } }
+        .nav-tab-label { flex: 1; text-align: center; padding: 8px 10px; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 12px; color: white; transition: background 0.2s; white-space: nowrap; }
+        @media (min-width: 768px) { .nav-tab-label { font-size: 13px; padding: 8px 12px; flex: unset; } }
         input[name="view-switch"] { display: none; }
         
         #tab-customer:checked ~ header .label-customer,
         #tab-dashboard:checked ~ header .label-dashboard { background: #d97706; }
 
-        .content-wrapper { flex: 1; max-width: 1100px; width: 100%; margin: 24px auto; padding: 0 16px; }
+        .content-wrapper { flex: 1; max-width: 1100px; width: 100%; margin: 16px auto; padding: 0 12px; }
+        @media (min-width: 768px) { .content-wrapper { margin: 24px auto; padding: 0 16px; } }
+        
         .view-content { display: none; }
         
-        #tab-customer:checked ~ .content-wrapper .container-customer { display: grid; grid-template-columns: 2fr 1fr; gap: 24px; }
-        #tab-dashboard:checked ~ .content-wrapper .container-dashboard { display: block; }
-
-        @media (max-width: 768px) { 
-            header { flex-direction: column; align-items: flex-start; padding: 16px; }
-            .nav-tabs { width: 100%; justify-content: space-between; }
-            .nav-tab-label { flex: 1; text-align: center; }
-            #tab-customer:checked ~ .content-wrapper .container-customer { grid-template-columns: 1fr; } 
-        }
+        #tab-customer:checked ~ .content-wrapper .container-customer { display: grid; grid-template-columns: 1fr; gap: 16px; }
+        @media (min-width: 900px) { #tab-customer:checked ~ .content-wrapper .container-customer { grid-template-columns: 2fr 1fr; gap: 24px; } }
         
-        .card { background: white; border: 1px solid #e2e8f0; border-radius: 12px; padding: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); margin-bottom: 20px; }
-        .items-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-        @media (max-width: 600px) { .items-grid { grid-template-columns: 1fr; } }
-        .item-card { border: 1px solid #cbd5e1; border-radius: 8px; padding: 16px; display: flex; flex-direction: column; justify-content: space-between; background: #fff; }
+        #tab-dashboard:checked ~ .content-wrapper .container-dashboard { display: block; }
+        
+        .card { background: white; border: 1px solid #e2e8f0; border-radius: 12px; padding: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); margin-bottom: 20px; overflow: hidden; }
+        @media (min-width: 768px) { .card { padding: 20px; } }
+        
+        .items-grid { display: grid; grid-template-columns: 1fr; gap: 16px; }
+        @media (min-width: 600px) { .items-grid { grid-template-columns: 1fr 1fr; } }
+        
+        .item-card { border: 1px solid #cbd5e1; border-radius: 8px; padding: 16px; display: flex; flex-direction: column; justify-content: space-between; background: #fff; word-break: break-word; }
         .badge { background: #d1fae5; color: #065f46; font-size: 11px; font-weight: bold; padding: 3px 8px; border-radius: 12px; display: inline-block; }
         .price-tag { font-size: 20px; font-weight: bold; color: #047857; }
-        .btn-add { background: #047857; color: white; border: none; padding: 8px 12px; border-radius: 6px; cursor: pointer; font-weight: 600; width: 100%; margin-top: 12px; }
+        .btn-add { background: #047857; color: white; border: none; padding: 10px 12px; border-radius: 6px; cursor: pointer; font-weight: 600; width: 100%; margin-top: 12px; font-size: 14px; }
         .btn-add:disabled { background: #cbd5e1; cursor: not-allowed; }
-        table { width: 100%; border-collapse: collapse; margin-top: 12px; text-align: left; font-size: 14px; }
-        th, td { padding: 10px; border-bottom: 1px solid #e2e8f0; }
+        
+        table { width: 100%; border-collapse: collapse; margin-top: 12px; text-align: left; font-size: 13px; }
+        @media (min-width: 768px) { table { font-size: 14px; } }
+        th, td { padding: 8px; border-bottom: 1px solid #e2e8f0; word-break: break-word; }
+        @media (min-width: 768px) { th, td { padding: 10px; } }
         th { background: #f1f5f9; color: #475569; }
+        
         .form-group { margin-bottom: 12px; }
         .form-group label { display: block; font-size: 12px; font-weight: 600; margin-bottom: 4px; color: #475569; }
-        .form-group input, .form-group select { width: 100%; padding: 8px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 14px; }
-        .cart-item { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid #f1f5f9; font-size: 14px; }
-        .cart-del { color: #ef4444; background: none; border: none; cursor: pointer; font-weight: bold; font-size: 16px; }
+        .form-group input, .form-group select { width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 14px; }
         
-        footer { background: #0f172a; color: #94a3b8; padding: 24px; font-size: 13px; margin-top: 40px; }
-        footer .footer-container { max-width: 1100px; margin: 0 auto; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 20px; }
+        .cart-item { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid #f1f5f9; font-size: 13px; gap: 8px; }
+        .cart-del { color: #ef4444; background: none; border: none; cursor: pointer; font-weight: bold; font-size: 16px; padding: 4px; }
+        
+        footer { background: #0f172a; color: #94a3b8; padding: 24px 16px; font-size: 13px; margin-top: 40px; }
+        footer .footer-container { max-width: 1100px; margin: 0 auto; display: flex; flex-direction: column; gap: 20px; }
+        @media (min-width: 768px) { footer .footer-container { flex-direction: row; justify-content: space-between; } }
         footer h4 { color: #f8fafc; margin-bottom: 8px; font-size: 14px; }
-        footer p { margin-bottom: 4px; line-height: 1.4; }
+        footer p { margin-bottom: 4px; line-height: 1.4; word-break: break-word; }
         footer a { color: #34d399; text-decoration: none; }
         footer a:hover { text-decoration: underline; }
     </style>
@@ -83,7 +94,7 @@
         </div>
         <div class="nav-tabs">
             <label for="tab-customer" class="nav-tab-label label-customer">🛒 Bestand</label>
-            <button type="button" onclick="openDashboard()" class="nav-tab-label label-dashboard" style="background:transparent; border:none; font-family:inherit;">⚙️ Bestandsverwaltung</button>
+            <button type="button" onclick="openDashboard()" class="nav-tab-label label-dashboard" style="background:transparent; border:none; font-family:inherit; color:white;">⚙️ Verwaltung</button>
         </div>
     </header>
 
@@ -143,7 +154,7 @@
         <div class="view-content container-dashboard">
             <div class="card">
                 <h3>➕ Neues Wildbret einpflegen</h3>
-                <form onsubmit="addItem(event)" style="display:grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin-top:12px;">
+                <form onsubmit="addItem(event)" style="display:grid; grid-template-columns: 1fr; gap: 12px; margin-top:12px;">
                     <div class="form-group">
                         <label>Wildart</label>
                         <select id="new-game">
@@ -164,9 +175,7 @@
                         <label>Preis (€/kg)</label>
                         <input type="number" step="0.5" id="new-price" required placeholder="18.00">
                     </div>
-                    <div style="display:flex; align-items:flex-end;" class="form-group">
-                        <button type="submit" class="btn-add" style="margin:0; cursor:pointer;">Speichern</button>
-                    </div>
+                    <button type="submit" class="btn-add" style="margin:0; cursor:pointer;">Speichern</button>
                 </form>
             </div>
 
@@ -176,13 +185,10 @@
                     <table>
                         <thead>
                             <tr>
-                                <th>Wildart</th>
-                                <th>Teilstück</th>
-                                <th>Gewicht</th>
-                                <th>€/kg</th>
-                                <th>Gesamtpreis</th>
+                                <th>Wildart / Teilstück</th>
+                                <th>Gewicht & Preis</th>
                                 <th>Status</th>
-                                <th>Reserviert für / Termin</th>
+                                <th>Reservierung</th>
                                 <th style="text-align:right;">Aktion</th>
                             </tr>
                         </thead>
@@ -196,8 +202,8 @@
     </div>
 
     <!-- PASSWORT-MODAL -->
-    <div id="password-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:1000; justify-content:center; align-items:center;">
-        <div style="background:white; padding:24px; border-radius:12px; width:320px; box-shadow:0 4px 12px rgba(0,0,0,0.15);">
+    <div id="password-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:1000; justify-content:center; align-items:center; padding: 16px;">
+        <div style="background:white; padding:24px; border-radius:12px; width:100%; max-width:320px; box-shadow:0 4px 12px rgba(0,0,0,0.15);">
             <h3 style="margin-bottom:12px; font-size:16px; color:#1e293b;">🔐 Jäger-Passwort eingeben</h3>
             <div style="position:relative; margin-bottom:16px;">
                 <input type="password" id="modal-pwd-input" placeholder="Passwort" onkeydown="handlePwdKey(event)" style="width:100%; padding:10px 40px 10px 10px; border:1px solid #cbd5e1; border-radius:6px; font-size:14px;">
@@ -254,7 +260,7 @@
             const availableItems = inventory.filter(i => i.status === 'available');
 
             if (availableItems.length === 0) {
-                container.innerHTML = '<p style="grid-column: span 2; color:#64748b;">Derzeit sind keine Stücke verfügbar.</p>';
+                container.innerHTML = '<p style="grid-column: span 1; color:#64748b;">Derzeit sind keine Stücke verfügbar.</p>';
             } else {
                 availableItems.forEach(item => {
                     const totalPrice = (item.weight * item.pricePerKg).toFixed(2);
@@ -293,8 +299,8 @@
                                 <strong>${c.game} - ${c.cut}</strong><br>
                                 <small style="color:#64748b;">${c.weight.toFixed(2)} kg à ${c.pricePerKg.toFixed(2)} €/kg</small>
                             </div>
-                            <div style="display: flex; align-items: center; gap: 10px;">
-                                <strong style="color:#047857;">${itemPrice.toFixed(2)} €</strong>
+                            <div style="display: flex; align-items: center; gap: 8px;">
+                                <strong style="color:#047857; white-space:nowrap;">${itemPrice.toFixed(2)} €</strong>
                                 <button class="cart-del" type="button" onclick="removeFromCart(${c.id})" title="Entfernen">✕</button>
                             </div>
                         </div>
@@ -315,16 +321,15 @@
 
                 table.innerHTML += `
                     <tr>
-                        <td><strong>${item.game}</strong></td>
-                        <td>${item.cut}</td>
-                        <td>${item.weight.toFixed(2)} kg</td>
-                        <td>${item.pricePerKg.toFixed(2)} €</td>
-                        <td><strong>${itemPrice} €</strong></td>
+                        <td><strong>${item.game}</strong><br>${item.cut}</td>
+                        <td>${item.weight.toFixed(2)} kg<br>${itemPrice} €</td>
                         <td><span class="badge" style="${item.status === 'reserved' ? 'background:#fef3c7; color:#92400e;' : ''}">${item.status === 'available' ? 'Verfügbar' : 'Reserviert'}</span></td>
                         <td>${customerInfo}</td>
                         <td style="text-align:right;">
-                            <button type="button" onclick="toggleStatus(${item.id})" style="padding:4px 8px; font-size:12px; cursor:pointer;">Status ändern</button>
-                            <button type="button" onclick="deleteItem(${item.id})" style="padding:4px 8px; font-size:12px; color:red; cursor:pointer;">Löschen</button>
+                            <div style="display:flex; flex-direction:column; gap:4px; align-items:flex-end;">
+                                <button type="button" onclick="toggleStatus(${item.id})" style="padding:4px 6px; font-size:11px; cursor:pointer;">Status</button>
+                                <button type="button" onclick="deleteItem(${item.id})" style="padding:4px 6px; font-size:11px; color:red; cursor:pointer; background:none; border:none;">Löschen</button>
+                            </div>
                         </td>
                     </tr>
                 `;
@@ -391,7 +396,6 @@
             saveAndRender();
         }
 
-        // Hilfsfunktion zur Erstellung des Google-Kalender-Links
         function createGoogleCalendarLink(title, details, location, startDateStr, timeStr) {
             const dateParts = startDateStr.split('-');
             const timeParts = timeStr.split(':');
@@ -456,7 +460,6 @@
             let itemsSummary = cart.map(c => `- ${c.game} (${c.cut}), ${c.weight.toFixed(2)} kg à ${c.pricePerKg.toFixed(2)} €/kg`).join('\n');
             let totalSumStr = totalSum.toFixed(2);
 
-            // Google Kalender Link generieren
             const calLink = createGoogleCalendarLink(
                 "Wildbret Abholung",
                 `Ihre Reservierung:\n${itemsSummary}\nGesamtsumme: ${totalSumStr} €`,
@@ -467,29 +470,13 @@
 
             const formData = new FormData();
             formData.append("access_key", "6513d8c3-ccd5-4d04-9b73-9d8fd4f8d56d");
-            formData.append("subject", `Bestätigung Ihrer Wildbret-Reservierung (${appointmentStr})`);
-            
-            // WICHTIG: Setzt die Kunden-Email als primary/replyto, damit Web3Forms die Bestätigung auch an den Käufer schickt
-            formData.append("email", email); 
-            formData.append("replyto", "wildbret.direkt@gmx.de");
-
+            formData.append("subject", `Neue Wildbret-Reservierung von ${name} (${appointmentStr})`);
             formData.append("Kunde", name);
             formData.append("E-Mail", email);
             formData.append("Telefon", phone);
             formData.append("Abholtermin", appointmentStr);
             formData.append("Auswahl", itemsSummary);
             formData.append("Gesamtsumme", totalSumStr + " €");
-
-            // Nachricht an den Kunden / Bestätigungstext
-            formData.append("message", 
-                `Hallo ${name},\n\n` +
-                `vielen Dank für Ihre Wildbret-Reservierung!\n\n` +
-                `Ihr vereinbarter Abholtermin:\n📍 Nikolaus-Lenau-Str. 18, 85757 Karlsfeld\n🕒 ${appointmentStr}\n\n` +
-                `Ihre ausgewählten Stücke:\n${itemsSummary}\n\n` +
-                `Gesamtsumme: ${totalSumStr} €\n\n` +
-                `👉 Termin in den Google-Kalender eintragen:\n${calLink}\n\n` +
-                `Mit freundlichen Grüßen\nJohannes Schönleben`
-            );
 
             fetch("https://api.web3forms.com/submit", {
                 method: "POST",
@@ -510,12 +497,11 @@
                     }
                 });
 
-                // Erfolgs-Box direkt unter dem Formular anzeigen inkl. Kalender-Button
                 const successContainer = document.getElementById('checkout-success-container');
                 successContainer.innerHTML = `
                     <div style="background:#d1fae5; border:1px solid #059669; border-radius:8px; padding:16px; text-align:center;">
                         <h4 style="color:#065f46; margin-bottom:8px;">✅ Reservierung erfolgreich!</h4>
-                        <p style="font-size:13px; color:#064e3b; margin-bottom:12px;">Vielen Dank, ${name}! Eine Bestätigung wurde an Ihre E-Mail-Adresse gesendet. Ihre Stücke sind für den <strong>${appointmentStr}</strong> reserviert.</p>
+                        <p style="font-size:13px; color:#064e3b; margin-bottom:12px;">Vielen Dank, ${name}! Ihre Stücke sind für den <strong>${appointmentStr}</strong> reserviert.</p>
                         ${calLink ? `<a href="${calLink}" target="_blank" class="btn-add" style="display:block; text-align:center; text-decoration:none; background:#047857; margin-top:8px;">📅 Termin direkt in den Google-Kalender eintragen</a>` : ''}
                     </div>
                 `;
