@@ -4,6 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Wildbret aus der stressfreien Wald-/Einzeljagd</title>
+    <!-- EmailJS SDK -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+    <script type="text/javascript">
+        (function() {
+            emailjs.init("Onng-vVSml7cYTSc-");
+        })();
+    </script>
     <style>
         * { box-sizing: border-box; font-family: system-ui, -apple-system, sans-serif; margin: 0; padding: 0; }
         body { background-color: #f8fafc; color: #1e293b; min-height: 100vh; display: flex; flex-direction: column; overflow-x: hidden; }
@@ -14,7 +21,7 @@
             padding: 16px; 
             display: flex; 
             flex-direction: column;
-            gap: 12px;
+            gap: 16px;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1); 
         }
         @media (min-width: 768px) {
@@ -22,13 +29,13 @@
         }
         .header-title { width: 100%; }
         @media (min-width: 768px) { .header-title { width: auto; flex: 1; } }
-        .header-title h1 { font-size: 18px; font-weight: bold; word-break: break-word; }
+        .header-title h1 { font-size: 17px; font-weight: bold; word-break: break-word; line-height: 1.3; }
         @media (min-width: 768px) { .header-title h1 { font-size: 20px; } }
-        .header-title p { font-size: 11px; color: #a7f3d0; margin-top: 4px; line-height: 1.4; }
+        .header-title p { font-size: 11px; color: #a7f3d0; margin-top: 6px; line-height: 1.4; }
         
-        .nav-tabs { display: flex; gap: 4px; background: #047857; padding: 4px; border-radius: 8px; width: 100%; }
+        .nav-tabs { display: flex; gap: 6px; background: #047857; padding: 4px; border-radius: 8px; width: 100%; }
         @media (min-width: 768px) { .nav-tabs { width: auto; } }
-        .nav-tab-label { flex: 1; text-align: center; padding: 8px 10px; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 12px; color: white; transition: background 0.2s; white-space: nowrap; }
+        .nav-tab-label { flex: 1; text-align: center; padding: 10px 8px; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 11px; color: white; transition: background 0.2s; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         @media (min-width: 768px) { .nav-tab-label { font-size: 13px; padding: 8px 12px; flex: unset; } }
         input[name="view-switch"] { display: none; }
         
@@ -145,7 +152,6 @@
                     <button type="submit" class="btn-add" style="background:#d97706; padding:12px; margin-top:8px; cursor:pointer;">Verbindlich Reservieren</button>
                 </form>
 
-                <!-- Dynamischer Bereich für Erfolgsbestätigung & Kalender-Link -->
                 <div id="checkout-success-container" style="margin-top: 16px;"></div>
             </div>
         </div>
@@ -468,6 +474,7 @@
                 time
             );
 
+            // 1. Benachrichtigung an Sie (via Web3Forms)
             const formData = new FormData();
             formData.append("access_key", "6513d8c3-ccd5-4d04-9b73-9d8fd4f8d56d");
             formData.append("subject", `Neue Wildbret-Reservierung von ${name} (${appointmentStr})`);
@@ -483,41 +490,54 @@
                 body: formData
             })
             .then(response => response.json())
-            .then(data => {
-                console.log("E-Mail erfolgreich versendet:", data);
-                
-                const reservedIds = cart.map(c => c.id);
-                inventory.forEach(i => {
-                    if (reservedIds.includes(i.id)) {
-                        i.status = 'reserved';
-                        i.customer = name;
-                        i.email = email;
-                        i.phone = phone;
-                        i.appointment = appointmentStr;
-                    }
+            .then(data => console.log("Jäger-Benachrichtigung gesendet:", data))
+            .catch(error => console.error("Fehler bei Jäger-Benachrichtigung:", error));
+
+            // 2. Automatische Bestätigungs-E-Mail an den Kunden (via EmailJS)
+            const templateParams = {
+                to_name: name,
+                to_email: email,
+                appointment: appointmentStr,
+                items_summary: itemsSummary,
+                total_sum: totalSumStr + " €",
+                calendar_link: calLink
+            };
+
+            emailjs.send("service_2237hhs", "template_oyn6cag", templateParams)
+                .then(function(response) {
+                    console.log("Kunden-Mail erfolgreich gesendet!", response.status, response.text);
+                }, function(error) {
+                    console.error("Fehler beim Senden der Kunden-Mail:", error);
                 });
 
-                const successContainer = document.getElementById('checkout-success-container');
-                successContainer.innerHTML = `
-                    <div style="background:#d1fae5; border:1px solid #059669; border-radius:8px; padding:16px; text-align:center;">
-                        <h4 style="color:#065f46; margin-bottom:8px;">✅ Reservierung erfolgreich!</h4>
-                        <p style="font-size:13px; color:#064e3b; margin-bottom:12px;">Vielen Dank, ${name}! Ihre Stücke sind für den <strong>${appointmentStr}</strong> reserviert.</p>
-                        ${calLink ? `<a href="${calLink}" target="_blank" class="btn-add" style="display:block; text-align:center; text-decoration:none; background:#047857; margin-top:8px;">📅 Termin direkt in den Google-Kalender eintragen</a>` : ''}
-                    </div>
-                `;
-
-                cart = [];
-                document.getElementById('cust-name').value = '';
-                document.getElementById('cust-email').value = '';
-                document.getElementById('cust-phone').value = '';
-                document.getElementById('cust-date').value = '';
-                document.getElementById('cust-time').value = '18:00';
-                saveAndRender();
-            })
-            .catch(error => {
-                console.error("Fehler beim E-Mail-Versand:", error);
-                alert("Fehler beim Senden der Reservierung. Bitte versuchen Sie es erneut.");
+            // Bestandsaktualisierung & UI-Feedback
+            const reservedIds = cart.map(c => c.id);
+            inventory.forEach(i => {
+                if (reservedIds.includes(i.id)) {
+                    i.status = 'reserved';
+                    i.customer = name;
+                    i.email = email;
+                    i.phone = phone;
+                    i.appointment = appointmentStr;
+                }
             });
+
+            const successContainer = document.getElementById('checkout-success-container');
+            successContainer.innerHTML = `
+                <div style="background:#d1fae5; border:1px solid #059669; border-radius:8px; padding:16px; text-align:center;">
+                    <h4 style="color:#065f46; margin-bottom:8px;">✅ Reservierung erfolgreich!</h4>
+                    <p style="font-size:13px; color:#064e3b; margin-bottom:12px;">Vielen Dank, ${name}! Eine Bestätigung wurde an Ihre E-Mail gesendet. Ihre Stücke sind für den <strong>${appointmentStr}</strong> reserviert.</p>
+                    ${calLink ? `<a href="${calLink}" target="_blank" class="btn-add" style="display:block; text-align:center; text-decoration:none; background:#047857; margin-top:8px;">📅 Termin direkt in den Google-Kalender eintragen</a>` : ''}
+                </div>
+            `;
+
+            cart = [];
+            document.getElementById('cust-name').value = '';
+            document.getElementById('cust-email').value = '';
+            document.getElementById('cust-phone').value = '';
+            document.getElementById('cust-date').value = '';
+            document.getElementById('cust-time').value = '18:00';
+            saveAndRender();
         }
 
         function openDashboard() {
@@ -552,7 +572,7 @@
                 closePwdModal();
             } else {
                 alert("Falsches Passwort!");
-                document.getElementById('modal-pwd-input').value = '';
+                document.getElementById('modal-pwd-input->value = '';
                 document.getElementById('modal-pwd-input').focus();
             }
         }
