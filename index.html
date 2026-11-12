@@ -345,9 +345,9 @@
     <script>
         let isAuthenticated = false;
 
-        const initialInventory = [
+    const initialInventory = [
     { id: 1794282164362, game: "Rehwild", cut: "Oberschale (Steak)", weight: 0.400, pricePerKg: 32.00, status: "available", customer: null, email: null, phone: null, appointment: null },
-    { id: 1794282136593, game: "Rehwild", cut: "Rücken (Steak)", weight: 0.320, pricePerKg: 44.00, status: "available", customer: null, email: null, phone: null, appointment: null },
+    { id: 1794282136593, game: "Rehwild", cut: "Rücken (Steak)", weight: 0.320, pricePerKg: 44.00, status: "reserved", customer: "Manuell geändert", email: "-", phone: "-", appointment: "Nach Absprache" },
     { id: 1794282049049, game: "Rehwild", cut: "Rücken (Steak)", weight: 0.290, pricePerKg: 44.00, status: "available", customer: null, email: null, phone: null, appointment: null },
     { id: 1794282013701, game: "Rehwild", cut: "Gulasch", weight: 1.800, pricePerKg: 25.00, status: "available", customer: null, email: null, phone: null, appointment: null },
     { id: 1794281962828, game: "Rehwild", cut: "Unterschale (pariert als Steak)", weight: 0.240, pricePerKg: 28.00, status: "available", customer: null, email: null, phone: null, appointment: null },
@@ -355,19 +355,19 @@
     { id: 1794281842862, game: "Rehwild", cut: "Filets (2)", weight: 0.180, pricePerKg: 50.00, status: "available", customer: null, email: null, phone: null, appointment: null },
     { id: 1794281792255, game: "Rehwild", cut: "Rücken (Steak)", weight: 0.180, pricePerKg: 44.00, status: "available", customer: null, email: null, phone: null, appointment: null },
     { id: 1794281781343, game: "Rehwild", cut: "Rücken (Steak)", weight: 0.210, pricePerKg: 44.00, status: "available", customer: null, email: null, phone: null, appointment: null },
-    { id: 1794281768496, game: "Rehwild", cut: "Rücken (Steak)", weight: 0.330, pricePerKg: 44.00, status: "available", customer: null, email: null, phone: null, appointment: null },
-    { id: 1794281748874, game: "Rehwild", cut: "Rücken (Steak)", weight: 0.320, pricePerKg: 44.00, status: "available", customer: null, email: null, phone: null, appointment: null },
+    { id: 1794281768496, game: "Rehwild", cut: "Rücken (Steak)", weight: 0.330, pricePerKg: 44.00, status: "reserved", customer: "Manuell geändert", email: "-", phone: "-", appointment: "Nach Absprache" },
+    { id: 1794281748874, game: "Rehwild", cut: "Rücken (Steak)", weight: 0.320, pricePerKg: 44.00, status: "reserved", customer: "Manuell geändert", email: "-", phone: "-", appointment: "Nach Absprache" },
     { id: 1794281692197, game: "Rehwild", cut: "Unterschale (pariert als Steak)", weight: 0.270, pricePerKg: 28.00, status: "available", customer: null, email: null, phone: null, appointment: null },
     { id: 1794281642563, game: "Rehwild", cut: "Unterschale (pariert als Steak)", weight: 0.238, pricePerKg: 28.00, status: "available", customer: null, email: null, phone: null, appointment: null },
     { id: 1794281599115, game: "Rehwild", cut: "Rücken (Steak)", weight: 0.265, pricePerKg: 44.00, status: "available", customer: null, email: null, phone: null, appointment: null },
     { id: 1794281119029, game: "Rehwild", cut: "Oberschale (Steak)", weight: 0.370, pricePerKg: 32.00, status: "available", customer: null, email: null, phone: null, appointment: null },
     { id: 1794281064872, game: "Rehwild", cut: "Oberschale (Steak)", weight: 0.390, pricePerKg: 32.00, status: "available", customer: null, email: null, phone: null, appointment: null },
-    { id: 1794281043901, game: "Rehwild", cut: "Rücken (Steak)", weight: 0.300, pricePerKg: 44.00, status: "available", customer: null, email: null, phone: null, appointment: null },
+    { id: 1794281043901, game: "Rehwild", cut: "Rücken (Steak)", weight: 0.300, pricePerKg: 44.00, status: "reserved", customer: "Manuell geändert", email: "-", phone: "-", appointment: "Nach Absprache" },
     { id: 1794281013561, game: "Rehwild", cut: "Filets (2)", weight: 0.200, pricePerKg: 50.00, status: "available", customer: null, email: null, phone: null, appointment: null },
     { id: 1794280970124, game: "Rehwild", cut: "Oberschale (Steak)", weight: 0.330, pricePerKg: 32.00, status: "available", customer: null, email: null, phone: null, appointment: null },
     { id: 1794280926515, game: "Rehwild", cut: "Oberschale (Steak)", weight: 0.270, pricePerKg: 32.00, status: "available", customer: null, email: null, phone: null, appointment: null },
     { id: 1794280885843, game: "Rehwild", cut: "Oberschale (Steak)", weight: 0.270, pricePerKg: 32.00, status: "available", customer: null, email: null, phone: null, appointment: null }
-];    
+];
 
         let inventory = [];
         try {
